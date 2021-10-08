@@ -1,10 +1,13 @@
+-lib hxasync
+-lib hxneu
+
 -cp src
--cp externs
+# -cp externs
 -D analyzer-optimize
--dce full
+-dce std
 -main Main
 # -debug
-# -D js-es=6
+-D js-es=6
 -js myapp/resources/js/__main.js
 
 # -lib markdown
@@ -15,3 +18,8 @@
 # -D state=debug
 # -debug
 # -dce full
+
+--next
+
+--cmd 'cd myapp'
+--cmd 'neu run'

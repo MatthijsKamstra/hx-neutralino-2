@@ -10,8 +10,9 @@
     "TEST": "Test Value"
   },
   "modes": {
+    "browser": {},
     "window": {
-      "title": "myapp",
+      "title": "Hx Neutralino 2",
       "width": 800,
       "height": 500,
       "minWidth": 400,
@@ -23,11 +24,10 @@
       "borderless": false,
       "maximize": false
     },
-    "browser": {},
     "cloud": {}
   },
   "cli": {
-    "binaryName": "myapp",
+    "binaryName": "hxNeutralino",
     "resourcesPath": "/resources/",
     "clientLibrary": "/resources/js/neutralino.js",
     "binaryVersion": "2.8.0",

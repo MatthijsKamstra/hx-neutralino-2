@@ -1,4 +1,5 @@
 # neutralinojs-minimal
+
 The simplest template for a Neutralinojs app. It's possible to use your favorite frontend framework using the following steps.
 
 - Create a new project using your favorite frontend framework. (Eg: `ng new --directory .`)
