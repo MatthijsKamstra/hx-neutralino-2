@@ -2,7 +2,7 @@
 -lib hxneu
 
 -cp src
--cp externs
+# -cp externs
 -D analyzer-optimize
 -dce std
 -main Main
@@ -19,7 +19,3 @@
 # -debug
 # -dce full
 
---next
-
---cmd 'cd myapp'
---cmd 'neu run'
