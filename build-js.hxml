@@ -1,0 +1,17 @@
+-cp src
+-cp externs
+-D analyzer-optimize
+-dce full
+-main Main
+# -debug
+# -D js-es=6
+-js myapp/resources/js/__main.js
+
+# -lib markdown
+# -cp src
+# -main MainJS
+# -js docs/main.js
+# -D source-map-content
+# -D state=debug
+# -debug
+# -dce full
