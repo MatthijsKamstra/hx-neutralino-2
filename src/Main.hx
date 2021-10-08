@@ -17,12 +17,10 @@ class Main {
 		var info:DivElement = cast document.getElementById("info");
 		info.innerHTML = NeutralinoGlobal.NL_TEST;
 
-		// // NL_TEST
-
 		var usage = Neutralino.computer.getRamUsage().then(function(res:NeutralinoComputerRAMResult) {
 			trace("Your ram size: " + (res.ram.total / 1000000) + "GB");
 			trace("x");
-			// this.foo();
+			this.foo(res);
 
 			// var info:DivElement = cast document.getElementById("info");
 			// var info:DivElement = cast document.getElementById("info");
@@ -30,11 +28,15 @@ class Main {
 		});
 		// info.innerHTML = '$usage';
 
-		// // await(Neutralino.filesystem.createDirectory({
-		// // 	path: './newDirectory',
-		// // }));
+		// await(Neutralino.filesystem.createDirectory({
+		// 	path: './hxnewDirectory',
+		// }));
+		Neutralino.filesystem.createDirectory({
+			path: './hxnewDirectory',
+		});
 
 		setupKey();
+		Neutralino.window.focus();
 		Neutralino.events.on("windowClose", onWindowClose);
 
 		// await(Neutralino.window.focus());
@@ -60,9 +62,9 @@ class Main {
 	// }
 
 	function onKeyDown(e:js.html.KeyboardEvent) {
-		// console.log(e);
-		// console.log('ctrl: ' + e.ctrlKey);
-		// console.log('meta: ' + e.metaKey);
+		console.log(e);
+		console.log('ctrl: ' + e.ctrlKey);
+		console.log('meta: ' + e.metaKey);
 
 		var info:DivElement = cast document.getElementById("key");
 		info.innerHTML = 'ctrl: ' + e.ctrlKey + ' meta: ' + e.metaKey;
@@ -102,10 +104,12 @@ class Main {
 		// }
 	}
 
-	function foo() {
+	function foo(res:NeutralinoComputerRAMResult) {
 		trace('foo');
-		var info:DivElement = cast document.getElementById("name");
-		info.innerHTML = 'foo';
+
+		var ram:DivElement = document.createDivElement();
+		ram.innerHTML = '<code>"Your ram size: ${(res.ram.total / 1000000)} GB</code>';
+		document.body.appendChild(ram);
 	}
 
 	static public function main() {

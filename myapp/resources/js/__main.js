@@ -5,11 +5,15 @@ class Main {
 		console.log("src/Main.hx:13:","Main");
 		Neutralino.init();
 		window.document.getElementById("info").innerHTML = window.NL_TEST;
+		let _gthis = this;
 		Neutralino.computer.getRamUsage().then(function(res) {
-			console.log("src/Main.hx:23:","Your ram size: " + res.ram.total / 1000000 + "GB");
-			console.log("src/Main.hx:24:","x");
+			console.log("src/Main.hx:21:","Your ram size: " + res.ram.total / 1000000 + "GB");
+			console.log("src/Main.hx:22:","x");
+			_gthis.foo(res);
 		});
+		Neutralino.filesystem.createDirectory({ path : "./hxnewDirectory"});
 		this.setupKey();
+		Neutralino.window.focus();
 		Neutralino.events.on("windowClose",$bind(this,this.onWindowClose));
 	}
 	onWindowClose() {
@@ -19,6 +23,9 @@ class Main {
 		window.onkeydown = $bind(this,this.onKeyDown);
 	}
 	onKeyDown(e) {
+		$global.console.log(e);
+		$global.console.log("ctrl: " + (e.ctrlKey == null ? "null" : "" + e.ctrlKey));
+		$global.console.log("meta: " + (e.metaKey == null ? "null" : "" + e.metaKey));
 		window.document.getElementById("key").innerHTML = "ctrl: " + (e.ctrlKey == null ? "null" : "" + e.ctrlKey) + " meta: " + (e.metaKey == null ? "null" : "" + e.metaKey);
 		if(e.metaKey == true) {
 			if(e.key == "q") {
@@ -26,9 +33,11 @@ class Main {
 			}
 		}
 	}
-	foo() {
-		console.log("src/Main.hx:106:","foo");
-		window.document.getElementById("name").innerHTML = "foo";
+	foo(res) {
+		console.log("src/Main.hx:108:","foo");
+		let ram = window.document.createElement("div");
+		ram.innerHTML = "<code>\"Your ram size: " + res.ram.total / 1000000 + " GB</code>";
+		window.document.body.appendChild(ram);
 	}
 	static main() {
 		new Main();
