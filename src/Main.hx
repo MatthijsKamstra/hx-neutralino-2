@@ -53,16 +53,24 @@ class Main {
 	}
 
 	@async function sayhello() {
-		var k = NeutralinoGlobal.NL_OS == 'Windows' ? 'USERNAME' : 'USER';
-		var response = '';
-		warn(k);
-		try {
-			response = untyped @await Neutralino.os.getEnvar({key: k}).value;
-		} catch (e) {
-			console.error(e);
-		}
-		error(response);
-		document.getElementById('name').innerText = 'Hello ${response}';
+		// var k = NeutralinoGlobal.NL_OS == 'Windows' ? 'USERNAME' : 'USER';
+		// var response = '';
+		// warn(k);
+		// trace(k);
+		// try {
+		// 	response =  @await Neutralino.os.getEnvar({key: k}).value;
+		// 	trace(response);
+		// } catch (e) {
+		// 	console.error(e);
+		// }
+		// error(k);
+		// document.getElementById('name').innerText = 'Hello ${response}';
+
+		var response = @await Neutralino.os.getEnvar({
+			key: 'USER'
+		});
+		console.log('USER = ${Json.stringify(response)}');
+		console.log('USER = ${untyped response.value}');
 	}
 
 	function setTray() {

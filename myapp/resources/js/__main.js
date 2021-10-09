@@ -32,20 +32,12 @@ class Main {
 		this.log("hi, " + Std.string(new Date()));
 	}
 	async sayhello() {
-		let k = window.NL_OS == "Windows" ? "USERNAME" : "USER";
-		let response = "";
-		this.warn(k);
-		try {
-			response = await Neutralino.os.getEnvar({ key : k}).value;
-		} catch( _g ) {
-			let e = haxe_Exception.caught(_g);
-			$global.console.error(e);
-		}
-		this.error(response);
-		window.document.getElementById("name").innerText = "Hello " + response;
+		let response = await Neutralino.os.getEnvar({ key : "USER"});
+		$global.console.log("USER = " + JSON.stringify(response));
+		$global.console.log("USER = " + response.value);
 	}
 	setTray() {
-		console.log("src/Main.hx:69:","setTray");
+		console.log("src/Main.hx:77:","setTray");
 		if(window.NL_MODE != "window") {
 			$global.console.log("INFO: Tray menu is only available in the window mode.");
 			return;
@@ -53,16 +45,16 @@ class Main {
 		Neutralino.os.setTray({ icon : "/resources/icons/trayIcon.png", menuItems : [{ id : "VERSION", text : "Get version"},{ id : "SEP", text : "-"},{ id : "QUIT", text : "Quit"}]});
 	}
 	showInfo() {
-		console.log("src/Main.hx:87:","showInfo");
+		console.log("src/Main.hx:95:","showInfo");
 		let tmp = "<div class=\"border\">\n            " + window.NL_APPID + " is running on port " + (window.NL_PORT == null ? "null" : Std.string(UInt.toFloat(window.NL_PORT))) + "  inside " + window.NL_OS + "\n            <br/><br/>\n            <span>server: v" + window.NL_VERSION + " . client: v" + window.NL_CVERSION;
 		window.document.getElementById("info").innerHTML = tmp + "</span>\n            </div>";
 	}
 	async setSettings() {
-		console.log("src/Main.hx:98:","setSettings");
+		console.log("src/Main.hx:106:","setSettings");
 		await Neutralino.storage.putData({ bucket : "userDetails", data : JSON.stringify({ username : "TestValue"})});
 	}
 	async getSettings() {
-		console.log("src/Main.hx:109:","getSettings");
+		console.log("src/Main.hx:117:","getSettings");
 		let response = await Neutralino.storage.getData({ bucket : "userDetails"});
 		$global.console.log("getSettings > Data: " + response.data);
 	}
@@ -76,35 +68,35 @@ class Main {
 		Neutralino.debug.log({ type : "ERROR", message : msg});
 	}
 	async createFolder() {
-		console.log("src/Main.hx:139:","createFolder");
+		console.log("src/Main.hx:147:","createFolder");
 		await Neutralino.filesystem.createDirectory({ path : "./hxnewDirectory"});
 	}
 	async deleteFolder() {
-		console.log("src/Main.hx:146:","deleteFolder");
+		console.log("src/Main.hx:154:","deleteFolder");
 		await Neutralino.filesystem.removeDirectory({ path : "./deleteFolder"});
 	}
 	async readFolder() {
-		console.log("src/Main.hx:153:","readFolder");
+		console.log("src/Main.hx:161:","readFolder");
 		let response = await Neutralino.filesystem.readDirectory({ path : window.NL_PATH});
 		$global.console.log("Content: ",response.entries);
 	}
 	async deleteFile() {
-		console.log("src/Main.hx:162:","deleteFile");
+		console.log("src/Main.hx:170:","deleteFile");
 		let response = await Neutralino.filesystem.removeFile({ filename : "./delete.txt"});
 		$global.console.log("" + Std.string(response));
 	}
 	async createFile() {
-		console.log("src/Main.hx:170:","createFile");
+		console.log("src/Main.hx:178:","createFile");
 		await Neutralino.filesystem.writeFile({ fileName : "./myFile.txt", data : "Sample content: " + new Date().getTime()});
 	}
 	async readFile() {
-		console.log("src/Main.hx:179:","readFile");
+		console.log("src/Main.hx:187:","readFile");
 		let response = await Neutralino.filesystem.readFile({ filename : "./myFile.txt"});
 		$global.console.log(JSON.stringify(response));
 		$global.console.log("Content: " + response.data);
 	}
 	checkFocus() {
-		console.log("src/Main.hx:188:","checkFocus");
+		console.log("src/Main.hx:196:","checkFocus");
 		let div = window.document.createElement("div");
 		div.innerHTML = "<code>focus: " + Std.string(window.document.hasFocus()) + "</code>";
 		window.document.body.appendChild(div);
@@ -128,10 +120,10 @@ class Main {
 		Neutralino.filesystem.writeFile({ fileName : "./settings.json", data : JSON.stringify(json)});
 	}
 	async getSettingZ() {
-		console.log("src/Main.hx:234:","getsettings");
+		console.log("src/Main.hx:242:","getsettings");
 		let response = await Neutralino.filesystem.readFile({ filename : "./settings.json"});
 		$global.console.log("Content: " + response.data);
-		console.log("src/Main.hx:239:","/getsettings");
+		console.log("src/Main.hx:247:","/getsettings");
 	}
 	onKeyDown(e) {
 		$global.console.log(e);
@@ -145,9 +137,9 @@ class Main {
 		}
 	}
 	async outputRamUsage() {
-		console.log("src/Main.hx:286:","outputRamUsagezzz");
+		console.log("src/Main.hx:294:","outputRamUsagezzz");
 		let usage = await Neutralino.computer.getRamUsage().then(function(res) {
-			console.log("src/Main.hx:288:","---> Your ram size: " + res.ram.total / 1000000 + "GB");
+			console.log("src/Main.hx:296:","---> Your ram size: " + res.ram.total / 1000000 + "GB");
 		});
 		let ram = window.document.createElement("div");
 		ram.innerHTML = "<code>Your ram size: " + usage.res.ram.total / 1000000 + " GB</code>";
@@ -174,31 +166,6 @@ class UInt {
 		}
 	}
 }
-class haxe_Exception extends Error {
-	constructor(message,previous,native) {
-		super(message);
-		this.message = message;
-		this.__previousException = previous;
-		this.__nativeException = native != null ? native : this;
-	}
-	static caught(value) {
-		if(((value) instanceof haxe_Exception)) {
-			return value;
-		} else if(((value) instanceof Error)) {
-			return new haxe_Exception(value.message,null,value);
-		} else {
-			return new haxe_ValueException(value,null,value);
-		}
-	}
-}
-haxe_Exception.__name__ = true;
-class haxe_ValueException extends haxe_Exception {
-	constructor(value,previous,native) {
-		super(String(value),previous,native);
-		this.value = value;
-	}
-}
-haxe_ValueException.__name__ = true;
 class haxe_iterators_ArrayIterator {
 	constructor(array) {
 		this.current = 0;
