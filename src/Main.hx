@@ -1,16 +1,13 @@
 package;
 
-import js.html.Event;
+import Neutralino.NeutralinoComputerRAMResult;
+import Neutralino;
+import haxe.Json as JSON;
 import haxe.Json;
+import js.Browser.*;
 import js.Syntax;
 import js.html.DivElement;
-import js.lib.Promise;
-import js.Browser.*;
-import Neutralino;
-import Neutralino.NeutralinoComputerRAMResult;
-import Neutralino.FileReadResult;
-import hxasync.AsyncMacroUtils.*;
-import haxe.Json as JSON;
+import js.html.Event;
 
 @:build(hxasync.AsyncMacro.build())
 class Main {
@@ -42,29 +39,35 @@ class Main {
 		setTray();
 		showInfo();
 
-		setButtons();
+		// setButtons();
 
-		createFile();
-		readFile();
-		deleteFile();
-		createFolder();
-		readFolder();
-		deleteFolder();
-		setSettings();
-		getSettings();
-		//
-		getSettingZ();
-		sayhello();
-		showDialog();
+		// createFile();
+		// readFile();
+		// deleteFile();
+		// createFolder();
+		// readFolder();
+		// deleteFolder();
+		// setSettings();
+		// getSettings();
+		// //
+		// getSettingZ();
+		// sayhello();
+		// showDialog();
 	}
 
-	@async function showDialog() {
-		var response = @await Neutralino.os.showDialogOpen({
-			title: 'Select a folder',
-			isDirectoryMode: true
-		});
-		console.log('You\'ve selected: ${untyped response.selectedEntry}');
-	}
+	// function showDialog() {
+	// 	// js-btn-file
+	// 	var btn = document.getElementById('js-btn-file');
+	// 	btn.onclick = (e:Event) -> {
+	// 		e.preventDefault();
+	// 		console.log('click');
+	// 		// var response = @await Neutralino.os.showDialogOpen({
+	// 		// 	title: 'Select a folder',
+	// 		// 	isDirectoryMode: true
+	// 		// });
+	// 		// console.log('You\'ve selected: ${untyped response.selectedEntry}');
+	// 	}
+	// }
 
 	@async function sayhello() {
 		// var k = NeutralinoGlobal.NL_OS == 'Windows' ? 'USERNAME' : 'USER';

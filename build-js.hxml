@@ -4,7 +4,7 @@
 -cp src
 -cp externs
 -D analyzer-optimize
--dce std
+-dce full
 -main Main
 # -debug
 -D js-es=6
