@@ -34,16 +34,18 @@ class Main {
 	async sayhello() {
 		let k = window.NL_OS == "Windows" ? "USERNAME" : "USER";
 		let response = "";
+		this.warn(k);
 		try {
 			response = await Neutralino.os.getEnvar({ key : k}).value;
 		} catch( _g ) {
 			let e = haxe_Exception.caught(_g);
 			$global.console.error(e);
 		}
+		this.error(response);
 		window.document.getElementById("name").innerText = "Hello " + response;
 	}
 	setTray() {
-		console.log("src/Main.hx:68:","setTray");
+		console.log("src/Main.hx:69:","setTray");
 		if(window.NL_MODE != "window") {
 			$global.console.log("INFO: Tray menu is only available in the window mode.");
 			return;
@@ -51,52 +53,58 @@ class Main {
 		Neutralino.os.setTray({ icon : "/resources/icons/trayIcon.png", menuItems : [{ id : "VERSION", text : "Get version"},{ id : "SEP", text : "-"},{ id : "QUIT", text : "Quit"}]});
 	}
 	showInfo() {
-		console.log("src/Main.hx:86:","showInfo");
+		console.log("src/Main.hx:87:","showInfo");
 		let tmp = "<div class=\"border\">\n            " + window.NL_APPID + " is running on port " + (window.NL_PORT == null ? "null" : Std.string(UInt.toFloat(window.NL_PORT))) + "  inside " + window.NL_OS + "\n            <br/><br/>\n            <span>server: v" + window.NL_VERSION + " . client: v" + window.NL_CVERSION;
 		window.document.getElementById("info").innerHTML = tmp + "</span>\n            </div>";
 	}
 	async setSettings() {
-		console.log("src/Main.hx:97:","setSettings");
+		console.log("src/Main.hx:98:","setSettings");
 		await Neutralino.storage.putData({ bucket : "userDetails", data : JSON.stringify({ username : "TestValue"})});
 	}
 	async getSettings() {
-		console.log("src/Main.hx:108:","getSettings");
+		console.log("src/Main.hx:109:","getSettings");
 		let response = await Neutralino.storage.getData({ bucket : "userDetails"});
 		$global.console.log("getSettings > Data: " + response.data);
 	}
 	async log(msg) {
 		await Neutralino.debug.log({ type : "INFO", message : msg});
 	}
+	warn(msg) {
+		Neutralino.debug.log({ type : "WARN", message : msg});
+	}
+	error(msg) {
+		Neutralino.debug.log({ type : "ERROR", message : msg});
+	}
 	async createFolder() {
-		console.log("src/Main.hx:124:","createFolder");
+		console.log("src/Main.hx:139:","createFolder");
 		await Neutralino.filesystem.createDirectory({ path : "./hxnewDirectory"});
 	}
 	async deleteFolder() {
-		console.log("src/Main.hx:131:","deleteFolder");
+		console.log("src/Main.hx:146:","deleteFolder");
 		await Neutralino.filesystem.removeDirectory({ path : "./deleteFolder"});
 	}
 	async readFolder() {
-		console.log("src/Main.hx:138:","readFolder");
+		console.log("src/Main.hx:153:","readFolder");
 		let response = await Neutralino.filesystem.readDirectory({ path : window.NL_PATH});
 		$global.console.log("Content: ",response.entries);
 	}
 	async deleteFile() {
-		console.log("src/Main.hx:147:","deleteFile");
+		console.log("src/Main.hx:162:","deleteFile");
 		let response = await Neutralino.filesystem.removeFile({ filename : "./delete.txt"});
 		$global.console.log("" + Std.string(response));
 	}
 	async createFile() {
-		console.log("src/Main.hx:155:","createFile");
+		console.log("src/Main.hx:170:","createFile");
 		await Neutralino.filesystem.writeFile({ fileName : "./myFile.txt", data : "Sample content: " + new Date().getTime()});
 	}
 	async readFile() {
-		console.log("src/Main.hx:164:","readFile");
+		console.log("src/Main.hx:179:","readFile");
 		let response = await Neutralino.filesystem.readFile({ filename : "./myFile.txt"});
 		$global.console.log(JSON.stringify(response));
 		$global.console.log("Content: " + response.data);
 	}
 	checkFocus() {
-		console.log("src/Main.hx:173:","checkFocus");
+		console.log("src/Main.hx:188:","checkFocus");
 		let div = window.document.createElement("div");
 		div.innerHTML = "<code>focus: " + Std.string(window.document.hasFocus()) + "</code>";
 		window.document.body.appendChild(div);
@@ -120,10 +128,10 @@ class Main {
 		Neutralino.filesystem.writeFile({ fileName : "./settings.json", data : JSON.stringify(json)});
 	}
 	async getSettingZ() {
-		console.log("src/Main.hx:219:","getsettings");
+		console.log("src/Main.hx:234:","getsettings");
 		let response = await Neutralino.filesystem.readFile({ filename : "./settings.json"});
 		$global.console.log("Content: " + response.data);
-		console.log("src/Main.hx:224:","/getsettings");
+		console.log("src/Main.hx:239:","/getsettings");
 	}
 	onKeyDown(e) {
 		$global.console.log(e);
@@ -137,9 +145,9 @@ class Main {
 		}
 	}
 	async outputRamUsage() {
-		console.log("src/Main.hx:271:","outputRamUsagezzz");
+		console.log("src/Main.hx:286:","outputRamUsagezzz");
 		let usage = await Neutralino.computer.getRamUsage().then(function(res) {
-			console.log("src/Main.hx:273:","---> Your ram size: " + res.ram.total / 1000000 + "GB");
+			console.log("src/Main.hx:288:","---> Your ram size: " + res.ram.total / 1000000 + "GB");
 		});
 		let ram = window.document.createElement("div");
 		ram.innerHTML = "<code>Your ram size: " + usage.res.ram.total / 1000000 + " GB</code>";

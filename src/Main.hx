@@ -55,12 +55,13 @@ class Main {
 	@async function sayhello() {
 		var k = NeutralinoGlobal.NL_OS == 'Windows' ? 'USERNAME' : 'USER';
 		var response = '';
-
+		warn(k);
 		try {
 			response = untyped @await Neutralino.os.getEnvar({key: k}).value;
 		} catch (e) {
 			console.error(e);
 		}
+		error(response);
 		document.getElementById('name').innerText = 'Hello ${response}';
 	}
 
@@ -116,6 +117,20 @@ class Main {
 		@await
 		Neutralino.debug.log({
 			type: 'INFO',
+			message: msg
+		});
+	}
+
+	function warn(msg) {
+		Neutralino.debug.log({
+			type: 'WARN',
+			message: msg
+		});
+	}
+
+	function error(msg) {
+		Neutralino.debug.log({
+			type: 'ERROR',
 			message: msg
 		});
 	}
