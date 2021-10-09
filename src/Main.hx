@@ -34,6 +34,10 @@ class Main {
 		Neutralino.events.on("windowClose", onWindowClose);
 		Neutralino.events.on('trayMenuItemClicked', onTrayMenuItemClicked);
 
+		log('log, ${Date.now()}');
+		warn('warn, ${Date.now()}');
+		error('error, ${Date.now()}');
+
 		setTray();
 		showInfo();
 
@@ -48,8 +52,6 @@ class Main {
 		//
 		getSettingZ();
 		sayhello();
-
-		log('hi, ${Date.now()}');
 	}
 
 	@async function sayhello() {
@@ -71,6 +73,7 @@ class Main {
 		});
 		console.log('USER = ${Json.stringify(response)}');
 		console.log('USER = ${untyped response.value}');
+		document.getElementById('name').innerText = 'Hello ${untyped response.value}';
 	}
 
 	function setTray() {
@@ -129,14 +132,16 @@ class Main {
 		});
 	}
 
-	function warn(msg) {
+	@async function warn(msg) {
+		@await
 		Neutralino.debug.log({
 			type: 'WARN',
 			message: msg
 		});
 	}
 
-	function error(msg) {
+	@async function error(msg) {
+		@await
 		Neutralino.debug.log({
 			type: 'ERROR',
 			message: msg
