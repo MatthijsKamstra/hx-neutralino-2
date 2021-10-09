@@ -39,35 +39,35 @@ class Main {
 		setTray();
 		showInfo();
 
-		// setButtons();
+		setButtons();
 
-		// createFile();
-		// readFile();
-		// deleteFile();
-		// createFolder();
-		// readFolder();
-		// deleteFolder();
-		// setSettings();
-		// getSettings();
-		// //
-		// getSettingZ();
-		// sayhello();
-		// showDialog();
+		createFile();
+		readFile();
+		deleteFile();
+		createFolder();
+		readFolder();
+		deleteFolder();
+		setSettings();
+		getSettings();
+		//
+		getSettingZ();
+		sayhello();
+		showDialog();
 	}
 
-	// function showDialog() {
-	// 	// js-btn-file
-	// 	var btn = document.getElementById('js-btn-file');
-	// 	btn.onclick = (e:Event) -> {
-	// 		e.preventDefault();
-	// 		console.log('click');
-	// 		// var response = @await Neutralino.os.showDialogOpen({
-	// 		// 	title: 'Select a folder',
-	// 		// 	isDirectoryMode: true
-	// 		// });
-	// 		// console.log('You\'ve selected: ${untyped response.selectedEntry}');
-	// 	}
-	// }
+	function showDialog() {
+		// js-btn-file
+		var btn = document.getElementById('js-btn-file');
+		btn.onclick = @async (e:Event) -> {
+			e.preventDefault();
+			console.log('click');
+			var response = @await Neutralino.os.showDialogOpen({
+				title: 'Select a folder',
+				isDirectoryMode: true
+			});
+			console.log('You\'ve selected: ${untyped response.selectedEntry}');
+		}
+	}
 
 	@async function sayhello() {
 		// var k = NeutralinoGlobal.NL_OS == 'Windows' ? 'USERNAME' : 'USER';
