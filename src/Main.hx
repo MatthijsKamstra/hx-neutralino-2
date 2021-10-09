@@ -9,6 +9,7 @@ import Neutralino;
 import Neutralino.NeutralinoComputerRAMResult;
 import Neutralino.FileReadResult;
 import hxasync.AsyncMacroUtils.*;
+import haxe.Json as JSON;
 
 @:build(hxasync.AsyncMacro.build())
 class Main {
@@ -24,20 +25,6 @@ class Main {
 	function init() {
 		Syntax.code("Neutralino.init();");
 
-		var info:DivElement = cast document.getElementById("info");
-		info.innerHTML = NeutralinoGlobal.NL_TEST;
-
-		// info.innerHTML = '$usage';
-
-		// await(Neutralino.filesystem.createDirectory({
-		// 	path: './hxnewDirectory',
-		// }));
-		Neutralino.filesystem.createDirectory({
-			path: './hxnewDirectory',
-		});
-
-		getSettings();
-
 		window.onkeydown = onKeyDown;
 		window.onresize = onResize;
 		window.focus();
@@ -45,36 +32,141 @@ class Main {
 		checkFocus();
 
 		Neutralino.events.on("windowClose", onWindowClose);
+		Neutralino.events.on('trayMenuItemClicked', onTrayMenuItemClicked);
 
-		if (document.hasFocus()) {
-			checkFocus();
-		}
+		setTray();
+		showInfo();
 
-		var usage = Neutralino.computer.getRamUsage().then(function(res:NeutralinoComputerRAMResult) {
-			trace("---> Your ram size: " + (res.ram.total / 1000000) + "GB");
-			this.foo(res);
+		createFile();
+		readFile();
+		deleteFile();
+		createFolder();
+		readFolder();
+		deleteFolder();
+		setSettings();
+		getSettings();
+		//
+		getSettingZ();
+		sayhello();
 
-			// var info:DivElement = cast document.getElementById("info");
-			// var info:DivElement = cast document.getElementById("info");
-			// info.innerHTML = ("Your ram size: " + (res.ram.total / 1000000) + "GB");
-		});
-
-		bar();
-		trace('readfile');
-		var r = Neutralino.filesystem.readFile({
-			filename: './settings.json'
-		}).then(function(response:FileReadResult) {
-			trace('----> Content: ${response.data}');
-			this.bar();
-		});
-		trace(r);
-		trace('/readfile'); // await(Neutralino.window.focus());
-
-		// Syntax.code('await Neutralino.window.focus();');
+		log('hi, ${Date.now()}');
 	}
 
-	function bar() {
-		trace('>>>>>>>>>>>> bar');
+	@async function sayhello() {
+		var k = NeutralinoGlobal.NL_OS == 'Windows' ? 'USERNAME' : 'USER';
+		var response = '';
+
+		try {
+			response = untyped @await Neutralino.os.getEnvar({key: k}).value;
+		} catch (e) {
+			console.error(e);
+		}
+		document.getElementById('name').innerText = 'Hello ${response}';
+	}
+
+	function setTray() {
+		trace('setTray');
+		if (NeutralinoGlobal.NL_MODE != "window") {
+			console.log("INFO: Tray menu is only available in the window mode.");
+			return;
+		}
+
+		var tray = {
+			icon: "/resources/icons/trayIcon.png",
+			menuItems: [
+				{id: "VERSION", text: "Get version"},
+				{id: "SEP", text: "-"},
+				{id: "QUIT", text: "Quit"}
+			]
+		};
+		Neutralino.os.setTray(tray);
+	};
+
+	function showInfo() {
+		trace('showInfo');
+
+		document.getElementById('info')
+			.innerHTML = '<div class="border">
+            ${NeutralinoGlobal.NL_APPID} is running on port ${NeutralinoGlobal.NL_PORT}  inside ${NeutralinoGlobal.NL_OS}
+            <br/><br/>
+            <span>server: v${NeutralinoGlobal.NL_VERSION} . client: v${NeutralinoGlobal.NL_CVERSION}</span>
+            </div>';
+	};
+
+	@async function setSettings() {
+		trace('setSettings');
+		@await
+		Neutralino.storage.putData({
+			bucket: 'userDetails',
+			data: JSON.stringify({
+				username: 'TestValue'
+			})
+		});
+	}
+
+	@async function getSettings() {
+		trace('getSettings');
+		var response = @await Neutralino.storage.getData({
+			bucket: 'userDetails'
+		});
+		console.log('getSettings > Data: ${untyped response.data}');
+	}
+
+	@async function log(msg) {
+		@await
+		Neutralino.debug.log({
+			type: 'INFO',
+			message: msg
+		});
+	}
+
+	@async function createFolder() {
+		trace('createFolder');
+		@await Neutralino.filesystem.createDirectory({
+			path: './hxnewDirectory',
+		});
+	}
+
+	@async function deleteFolder() {
+		trace('deleteFolder');
+		@await Neutralino.filesystem.removeDirectory({
+			path: './deleteFolder',
+		});
+	}
+
+	@async function readFolder() {
+		trace('readFolder');
+		var response = @await
+			Neutralino.filesystem.readDirectory({
+				path: NeutralinoGlobal.NL_PATH
+			});
+		console.log('Content: ', untyped response.entries);
+	}
+
+	@async function deleteFile() {
+		trace('deleteFile');
+		var response = @await Neutralino.filesystem.removeFile({
+			filename: './delete.txt'
+		});
+		console.log('${response}');
+	}
+
+	@async function createFile() {
+		trace('createFile');
+		@await
+		Neutralino.filesystem.writeFile({
+			fileName: './myFile.txt',
+			data: 'Sample content: ${Date.now().getTime()}'
+		});
+	}
+
+	@async function readFile() {
+		trace('readFile');
+		var response = @await Neutralino.filesystem.readFile({
+			filename: './myFile.txt'
+		});
+		console.log(Json.stringify(response));
+		console.log('Content: ${untyped response.data}');
 	}
 
 	function checkFocus() {
@@ -86,6 +178,21 @@ class Main {
 
 	function onWindowClose() {
 		Neutralino.app.exit();
+	}
+
+	function onTrayMenuItemClicked(event) {
+		console.log('Event data: ${event.detail}');
+		switch (untyped event.detail.id) {
+			case "VERSION":
+				Neutralino.os.showMessageBox({
+					type: NeutralinoMessageType.INFO,
+					title: "Version information",
+					content: 'Neutralinojs server: v${NeutralinoGlobal.NL_VERSION} | Neutralinojs client: v${NeutralinoGlobal.NL_CVERSION}'
+				});
+
+			case "QUIT":
+				Neutralino.app.exit();
+		}
 	}
 
 	// function onKeyUp(e:js.html.KeyboardEvent) {
@@ -108,7 +215,7 @@ class Main {
 		});
 	}
 
-	@async function getSettings() {
+	@async function getSettingZ() {
 		trace('getsettings');
 		var response = @await Neutralino.filesystem.readFile({
 			filename: './settings.json'
@@ -160,11 +267,18 @@ class Main {
 		// }
 	}
 
-	function foo(res:NeutralinoComputerRAMResult) {
-		trace('foozzz');
+	@async function outputRamUsage() {
+		trace('outputRamUsagezzz');
+		var usage = @await Neutralino.computer.getRamUsage().then(function(res:NeutralinoComputerRAMResult) {
+			trace("---> Your ram size: " + (res.ram.total / 1000000) + "GB");
+
+			// var info:DivElement = cast document.getElementById("info");
+			// var info:DivElement = cast document.getElementById("info");
+			// info.innerHTML = ("Your ram size: " + (res.ram.total / 1000000) + "GB");
+		});
 
 		var ram:DivElement = document.createDivElement();
-		ram.innerHTML = '<code>"Your ram size: ${(res.ram.total / 1000000)} GB</code>';
+		ram.innerHTML = '<code>Your ram size: ${(untyped usage.res.ram.total / 1000000)} GB</code>';
 		document.body.appendChild(ram);
 	}
 
