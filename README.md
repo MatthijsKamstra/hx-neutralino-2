@@ -43,10 +43,5 @@ GitHub - botsman/hxasync: This library allows you to add "async" and "await" key
 
 [https://github.com/botsman/hxasync]
 
-```
-haxelib install hxasync
-```
-
-```
--lib hxasync
-```
+1. install `haxelib install hxasync`
+2. add to build.hxml `-lib hxasync`

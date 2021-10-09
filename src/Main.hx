@@ -52,6 +52,15 @@ class Main {
 		//
 		getSettingZ();
 		sayhello();
+		showDialog();
+	}
+
+	@async function showDialog() {
+		var response = @await Neutralino.os.showDialogOpen({
+			title: 'Select a folder',
+			isDirectoryMode: true
+		});
+		console.log('You\'ve selected: ${untyped response.selectedEntry}');
 	}
 
 	@async function sayhello() {
