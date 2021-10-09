@@ -1,5 +1,6 @@
 package;
 
+import js.html.Event;
 import haxe.Json;
 import js.Syntax;
 import js.html.DivElement;
@@ -41,6 +42,8 @@ class Main {
 		setTray();
 		showInfo();
 
+		setButtons();
+
 		createFile();
 		readFile();
 		deleteFile();
@@ -74,6 +77,20 @@ class Main {
 		console.log('USER = ${Json.stringify(response)}');
 		console.log('USER = ${untyped response.value}');
 		document.getElementById('name').innerText = 'Hello ${untyped response.value}';
+	}
+
+	function setButtons() {
+		trace('setButtons');
+		var btn = document.getElementById('js-btn-notification');
+
+		btn.onclick = @async (e:Event) -> {
+			e.preventDefault();
+			trace('click');
+			@await Neutralino.os.showNotification({
+				summary: 'Hello world',
+				body: 'It works!. Have a nice day'
+			});
+		}
 	}
 
 	function setTray() {
