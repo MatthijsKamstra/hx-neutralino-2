@@ -50,9 +50,13 @@ class Main {
 		setSettings();
 		getSettings();
 		//
-		getSettingZ();
+		// getSettingZ();
 		sayhello();
 		showDialog();
+
+		setWindowSettings();
+		getWindowSettings();
+		updateWindowSettings();
 	}
 
 	function showDialog() {
@@ -134,6 +138,8 @@ class Main {
             </div>';
 	};
 
+	// --------------------------------------------------
+
 	@async function setSettings() {
 		trace('setSettings');
 		@await
@@ -152,6 +158,30 @@ class Main {
 		});
 		console.log('getSettings > Data: ${untyped response.data}');
 	}
+
+	@async function setWindowSettings() {
+		trace('setWindowSettings');
+		@await
+		Neutralino.storage.putData({
+			bucket: 'window',
+			data: JSON.stringify({
+				width: window.innerWidth,
+				height: window.innerHeight,
+			})
+		});
+	}
+
+	@async function getWindowSettings() {
+		trace('getWindowSettings');
+		var response = @await Neutralino.storage.getData({
+			bucket: 'window'
+		});
+		console.log('getWindowSettings > Data: ${untyped response.data}');
+	}
+
+	function updateWindowSettings() {}
+
+	// ----------------------------------------------------
 
 	@async function log(msg) {
 		@await
