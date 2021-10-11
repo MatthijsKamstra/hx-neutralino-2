@@ -32,9 +32,11 @@ class Main {
 		this.deleteFolder();
 		this.setSettings();
 		this.getSettings();
-		this.getSettingZ();
 		this.sayhello();
 		this.showDialog();
+		this.setWindowSettings();
+		this.getWindowSettings();
+		this.updateWindowSettings();
 	}
 	showDialog() {
 		let btn = window.document.getElementById("js-btn-file");
@@ -52,15 +54,15 @@ class Main {
 		window.document.getElementById("name").innerText = "Hello " + response.value;
 	}
 	setButtons() {
-		console.log("src/Main.hx:95:","setButtons");
+		console.log("src/Main.hx:99:","setButtons");
 		window.document.getElementById("js-btn-notification").onclick = async function(e) {
 			e.preventDefault();
-			console.log("src/Main.hx:100:","click");
+			console.log("src/Main.hx:104:","click");
 			await Neutralino.os.showNotification({ summary : "Hello world", body : "It works!. Have a nice day"});
 		};
 	}
 	setTray() {
-		console.log("src/Main.hx:109:","setTray");
+		console.log("src/Main.hx:113:","setTray");
 		if(window.NL_MODE != "window") {
 			$global.console.log("INFO: Tray menu is only available in the window mode.");
 			return;
@@ -68,18 +70,29 @@ class Main {
 		Neutralino.os.setTray({ icon : "/resources/icons/trayIcon.png", menuItems : [{ id : "VERSION", text : "Get version"},{ id : "SEP", text : "-"},{ id : "QUIT", text : "Quit"}]});
 	}
 	showInfo() {
-		console.log("src/Main.hx:127:","showInfo");
+		console.log("src/Main.hx:131:","showInfo");
 		let tmp = "<div class=\"border\">\n            " + window.NL_APPID + " is running on port " + (window.NL_PORT == null ? "null" : Std.string(UInt.toFloat(window.NL_PORT))) + "  inside " + window.NL_OS + "\n            <br/><br/>\n            <span>server: v" + window.NL_VERSION + " . client: v" + window.NL_CVERSION;
 		window.document.getElementById("info").innerHTML = tmp + "</span>\n            </div>";
 	}
 	async setSettings() {
-		console.log("src/Main.hx:138:","setSettings");
+		console.log("src/Main.hx:144:","setSettings");
 		await Neutralino.storage.putData({ bucket : "userDetails", data : JSON.stringify({ username : "TestValue"})});
 	}
 	async getSettings() {
-		console.log("src/Main.hx:149:","getSettings");
+		console.log("src/Main.hx:155:","getSettings");
 		let response = await Neutralino.storage.getData({ bucket : "userDetails"});
 		$global.console.log("getSettings > Data: " + response.data);
+	}
+	async setWindowSettings() {
+		console.log("src/Main.hx:163:","setWindowSettings");
+		await Neutralino.storage.putData({ bucket : "window", data : JSON.stringify({ width : window.innerWidth, height : window.innerHeight})});
+	}
+	async getWindowSettings() {
+		console.log("src/Main.hx:175:","getWindowSettings");
+		let response = await Neutralino.storage.getData({ bucket : "window"});
+		$global.console.log("getWindowSettings > Data: " + response.data);
+	}
+	updateWindowSettings() {
 	}
 	async log(msg) {
 		await Neutralino.debug.log({ type : "INFO", message : msg});
@@ -91,35 +104,35 @@ class Main {
 		await Neutralino.debug.log({ type : "ERROR", message : msg});
 	}
 	async createFolder() {
-		console.log("src/Main.hx:181:","createFolder");
+		console.log("src/Main.hx:211:","createFolder");
 		await Neutralino.filesystem.createDirectory({ path : "./hxnewDirectory"});
 	}
 	async deleteFolder() {
-		console.log("src/Main.hx:188:","deleteFolder");
+		console.log("src/Main.hx:218:","deleteFolder");
 		await Neutralino.filesystem.removeDirectory({ path : "./deleteFolder"});
 	}
 	async readFolder() {
-		console.log("src/Main.hx:195:","readFolder");
+		console.log("src/Main.hx:225:","readFolder");
 		let response = await Neutralino.filesystem.readDirectory({ path : window.NL_PATH});
 		$global.console.log("Content: ",response.entries);
 	}
 	async deleteFile() {
-		console.log("src/Main.hx:204:","deleteFile");
+		console.log("src/Main.hx:234:","deleteFile");
 		let response = await Neutralino.filesystem.removeFile({ filename : "./delete.txt"});
 		$global.console.log("" + Std.string(response));
 	}
 	async createFile() {
-		console.log("src/Main.hx:212:","createFile");
+		console.log("src/Main.hx:242:","createFile");
 		await Neutralino.filesystem.writeFile({ fileName : "./myFile.txt", data : "Sample content: " + new Date().getTime()});
 	}
 	async readFile() {
-		console.log("src/Main.hx:221:","readFile");
+		console.log("src/Main.hx:251:","readFile");
 		let response = await Neutralino.filesystem.readFile({ filename : "./myFile.txt"});
 		$global.console.log(JSON.stringify(response));
 		$global.console.log("Content: " + response.data);
 	}
 	checkFocus() {
-		console.log("src/Main.hx:230:","checkFocus");
+		console.log("src/Main.hx:260:","checkFocus");
 		let div = window.document.createElement("div");
 		div.innerHTML = "<code>focus: " + Std.string(window.document.hasFocus()) + "</code>";
 		window.document.body.appendChild(div);
@@ -141,12 +154,6 @@ class Main {
 	onResize(e) {
 		let json = { width : window.innerWidth, height : window.innerHeight};
 		Neutralino.filesystem.writeFile({ fileName : "./settings.json", data : JSON.stringify(json)});
-	}
-	async getSettingZ() {
-		console.log("src/Main.hx:276:","getsettings");
-		let response = await Neutralino.filesystem.readFile({ filename : "./settings.json"});
-		$global.console.log("Content: " + response.data);
-		console.log("src/Main.hx:281:","/getsettings");
 	}
 	onKeyDown(e) {
 		$global.console.log(e);
@@ -269,6 +276,6 @@ $global.$haxeUID |= 0;
 	Date.__name__ = "Date";
 }
 js_Boot.__toStr = ({ }).toString;
-Main.__meta__ = { fields : { sayhello : { async : null}, setSettings : { async : null}, getSettings : { async : null}, log : { async : null}, warn : { async : null}, error : { async : null}, createFolder : { async : null}, deleteFolder : { async : null}, readFolder : { async : null}, deleteFile : { async : null}, createFile : { async : null}, readFile : { async : null}, getSettingZ : { async : null}}};
+Main.__meta__ = { fields : { sayhello : { async : null}, setSettings : { async : null}, getSettings : { async : null}, setWindowSettings : { async : null}, getWindowSettings : { async : null}, log : { async : null}, warn : { async : null}, error : { async : null}, createFolder : { async : null}, deleteFolder : { async : null}, readFolder : { async : null}, deleteFile : { async : null}, createFile : { async : null}, readFile : { async : null}}};
 Main.main();
 })(typeof window != "undefined" ? window : typeof global != "undefined" ? global : typeof self != "undefined" ? self : this);
